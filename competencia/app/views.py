@@ -57,6 +57,6 @@ class RecommendationView(View):
         2. Regla de Tipo de Objeto: Si el cajón contiene objetos que no coinciden con su tipo (ej: calcetines en un cajón de documentos), recomienda moverlos al cajón correcto.
         3. Regla de Espacio no Utilizado: Si el cajón está por debajo del 20% de su capacidad, sugiere consolidar su contenido en otro cajón del mismo tipo para liberar espacio.
 
-        Proporciona una respuesta amigable y directa al usuario.
+        Proporciona una respuesta amigable , no uses tildes ni acentos y directa al usuario. Usa palabras más naturales y se más concreto en el mensaje.
         """
         return f"{drawer_info} {objects_info}\n\n{rules}"
