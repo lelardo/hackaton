@@ -5,6 +5,21 @@ from datetime import date
 class Closet(models.Model):
     name = models.CharField(max_length=255)
 
+    @classmethod
+    def create_with_drawers(cls, name, drawers_data):
+        closet = cls.objects.create(name=name)
+        
+        for drawer_data in drawers_data:
+            Drawer.objects.create(
+                closet=closet,
+                name=drawer_data['name'],
+                max_capacity=drawer_data['max_capacity'],
+                size=drawer_data['size'],
+                type=drawer_data['type']
+            )
+        
+        return closet
+
 
 class Drawer(models.Model):
     SIZE_CHOICES = [
@@ -76,18 +91,29 @@ class Drawer(models.Model):
         else:
             raise ValidationError("El cajón ha alcanzado su capacidad máxima.")
     
-    def remove_object(self, object):
+    def remove_equal_objects(self):
+        """
+        Elimina objetos duplicados del cajón basándose en nombre, tipo y tamaño.
+        Retorna una lista de los objetos que fueron desvinculados.
+        """
         objetos = list(self.stored_objects.all())
         vistos = set()
+        removed_objects = []
+
         for obj in objetos:
             clave = (obj.name, obj.type, obj.size)
             if clave in vistos:
                 self.stored_objects.remove(obj)
                 obj.drawer = None
                 obj.save()
-                self.create_history_record('D', object_name=obj.name)
+                removed_objects.append(obj)
             else:
                 vistos.add(clave)
+
+        if removed_objects:
+            self.create_history_record('D', object_count=len(removed_objects))
+
+        return removed_objects
 
     def sort_objects(self):
         self.stored_objects.order_by('size')
