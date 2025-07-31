@@ -31,6 +31,13 @@ class DrawerViewSet(viewsets.ModelViewSet):
     queryset = Drawer.objects.all().order_by('id')
     serializer_class = DrawerSerializer
 
+    def get_queryset(self):
+        queryset = Drawer.objects.all().order_by('id')
+        closet_id = self.request.query_params.get('closet', None)
+        if closet_id is not None:
+            queryset = queryset.filter(closet_id=closet_id)
+        return queryset
+
     @action(detail=True, methods=['post'], url_path='assign-object')
     def assign_object(self, request, pk=None):
         """

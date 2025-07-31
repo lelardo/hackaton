@@ -116,7 +116,15 @@ class Drawer(models.Model):
         return removed_objects
 
     def sort_objects(self):
-        self.stored_objects.order_by('size')
+        size_order = {'S': 0, 'M': 1, 'L': 2}
+        sorted_objects = sorted(
+            self.stored_objects.all(),
+            key=lambda obj: size_order.get(obj.size, 1)
+        )
+        # Limpiar y volver a agregar en orden
+        self.stored_objects.clear()
+        for obj in sorted_objects:
+            self.stored_objects.add(obj)
         self.save()
         self.create_history_record('S')
 
@@ -127,18 +135,30 @@ class Object(models.Model):
         ('P', 'Papers'),
         ('W', 'Wires'),
     ]
+
+    SIZE_CHOICES = [
+        ('S', 'Small'),
+        ('M', 'Medium'),
+        ('L', 'Large'),
+    ]
     
     type = models.CharField(
         max_length=1,
         choices=TYPE_CHOICES,
         default='C'
     )
-    size = models.FloatField(default=1.0)
+    size = models.CharField(
+        max_length=1,
+        choices=SIZE_CHOICES,
+        default='M'
+    )
     name = models.CharField(max_length=255)
     drawer = models.ForeignKey(
         Drawer,
         on_delete=models.CASCADE,
-        related_name='drawer_objects'
+        related_name='drawer_objects',
+        null=True,
+        blank=True
     )
 
 class History(models.Model):

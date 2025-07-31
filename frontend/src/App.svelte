@@ -1,9 +1,53 @@
 <script lang="ts">
-  import Homepage from './lib/create.svelte';
+  import Homepage from './lib/homepage.svelte';
+  import Create from './lib/create.svelte';
+
+  // Estado del router
+  let currentRoute = $state(window.location.pathname);
+
+  // Función para navegar
+  function navigate(path: string) {
+    currentRoute = path;
+    window.history.pushState({}, '', path);
+  }
+
+  // Manejar navegación del navegador (botón atrás/adelante)
+  $effect(() => {
+    function handlePopState() {
+      currentRoute = window.location.pathname;
+    }
+    
+    window.addEventListener('popstate', handlePopState);
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  });
+
+  // Determinar componente a mostrar
+  let CurrentComponent = $derived(() => {
+    switch (currentRoute) {
+      case '/':
+        return Homepage;
+      case '/create':
+        return Create;
+      default:
+        return Homepage;
+    }
+  });
+
+  // Hacer disponible la función navigate globalmente
+  if (typeof window !== 'undefined') {
+    window.navigate = navigate;
+  }
 </script>
 
 <main>
-  <Homepage />
+  {#if currentRoute === '/create'}
+    <Create />
+  {:else}
+    <Homepage />
+  {/if}
 </main>
 
 <style>
