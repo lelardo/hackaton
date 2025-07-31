@@ -1,0 +1,533 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', serif;
+    background: linear-gradient(135deg, #FEF3C7, #FDE68A, #F59E0B);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.title h1 {
+    font-size: 3.5rem;
+    color: #92400E;
+    text-shadow: 3px 3px 0px #8B4513, -1px -1px 0px #D2691E;
+    margin-bottom: 10px;
+    animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+    0% { text-shadow: 3px 3px 0px #8B4513, -1px -1px 0px #D2691E; }
+    100% { text-shadow: 3px 3px 10px #8B4513, -1px -1px 10px #D2691E; }
+}
+
+.title-line {
+    width: 200px;
+    height: 4px;
+    background: linear-gradient(to right, #92400E, #D97706, #92400E);
+    margin: 0 auto;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.main-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    align-items: start;
+}
+
+/* Armario principal */
+.closet-frame {
+    background: linear-gradient(145deg, #8B4513, #A0522D, #654321);
+    border-radius: 30px;
+    padding: 30px;
+    box-shadow: 
+        0 20px 40px rgba(0,0,0,0.3),
+        inset 0 2px 4px rgba(255,255,255,0.2),
+        inset 0 -2px 4px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Decoraciones de esquina del armario */
+.closet-frame::before,
+.closet-frame::after {
+    content: '';
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, #D4AF37, #B8860B);
+    border-radius: 50%;
+}
+
+.closet-frame::before {
+    top: 20px;
+    left: 20px;
+    box-shadow: inset 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.closet-frame::after {
+    top: 20px;
+    right: 20px;
+    box-shadow: inset 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Vetas de madera del marco */
+.wood-grain {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        repeating-linear-gradient(45deg, 
+            transparent, transparent 2px, 
+            rgba(255,255,255,0.1) 2px, 
+            rgba(255,255,255,0.1) 4px),
+        repeating-linear-gradient(0deg,
+            transparent, transparent 15px,
+            rgba(139,69,19,0.3) 15px,
+            rgba(139,69,19,0.3) 17px);
+    border-radius: 30px;
+    pointer-events: none;
+}
+
+.closet-interior {
+    background: linear-gradient(to bottom, #FEF3C7, #FDE68A, #FCD34D);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 
+        inset 0 4px 8px rgba(0,0,0,0.2),
+        inset 0 -2px 4px rgba(255,255,255,0.3);
+    position: relative;
+}
+
+/* Vetas interiores */
+.interior-grain {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        repeating-linear-gradient(90deg,
+            transparent, transparent 12px,
+            rgba(139,69,19,0.1) 12px,
+            rgba(139,69,19,0.1) 14px);
+    border-radius: 20px;
+    pointer-events: none;
+}
+
+.drawers-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    z-index: 10;
+}
+
+.drawer {
+    position: relative;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: all 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.drawer:hover:not(.open) {
+    transform: translateX(4px) scale(1.02);
+}
+
+.drawer.open {
+    transform: translateX(40px) rotateY(2deg);
+    z-index: 100;
+}
+
+.drawer.animating {
+    animation: drawerShake 0.6s ease-in-out;
+}
+
+@keyframes drawerShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+
+.drawer-shadow {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    transition: all 0.6s ease;
+    filter: blur(4px);
+}
+
+.drawer.open .drawer-shadow {
+    transform: translateX(8px) translateY(8px);
+    opacity: 0.5;
+}
+
+.drawer-face {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 
+        0 4px 8px rgba(0,0,0,0.2),
+        inset 0 2px 4px rgba(255,255,255,0.3),
+        inset 0 -2px 4px rgba(0,0,0,0.1);
+    background-size: cover;
+    background-position: center;
+}
+
+.drawer-small { height: 60px; }
+.drawer-medium { height: 80px; }
+.drawer-large { height: 100px; }
+
+.drawer-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0 20px;
+    position: relative;
+    z-index: 20;
+}
+
+.drawer-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.drawer-icon {
+    font-size: 2.2rem;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+    animation: iconFloat 3s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+.drawer-info h3 {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #374151;
+    margin-bottom: 2px;
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+}
+
+.drawer-info .type {
+    font-size: 0.8rem;
+    color: #6B7280;
+    font-style: italic;
+}
+
+.capacity-bar {
+    flex: 1;
+    margin: 0 20px;
+    height: 8px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.capacity-fill {
+    height: 100%;
+    transition: width 1s ease-out, background-color 0.5s ease;
+    border-radius: 4px;
+    position: relative;
+}
+
+.capacity-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
+    border-radius: 4px 4px 0 0;
+}
+
+.capacity-low { background: linear-gradient(to right, #10B981, #6EE7B7); }
+.capacity-medium { background: linear-gradient(to right, #F59E0B, #FCD34D); }
+.capacity-high { background: linear-gradient(to right, #EF4444, #FCA5A5); }
+
+.drawer-stats {
+    text-align: right;
+}
+
+.drawer-stats .count {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #374151;
+}
+
+.drawer-stats .size {
+    font-size: 0.8rem;
+    color: #6B7280;
+    background: rgba(255,255,255,0.5);
+    padding: 2px 6px;
+    border-radius: 8px;
+    margin-top: 2px;
+    display: inline-block;
+}
+
+/* Manija del cajón */
+.drawer-handle {
+    width: 50px;
+    height: 20px;
+    background: linear-gradient(145deg, #D1D5DB, #9CA3AF, #6B7280);
+    border-radius: 10px;
+    box-shadow: 
+        0 3px 6px rgba(0,0,0,0.3),
+        inset 0 1px 2px rgba(255,255,255,0.4),
+        inset 0 -1px 2px rgba(0,0,0,0.2);
+    position: relative;
+    margin-left: 15px;
+    transition: all 0.3s ease;
+}
+
+.drawer:hover .drawer-handle {
+    background: linear-gradient(145deg, #E5E7EB, #D1D5DB, #9CA3AF);
+    transform: translateX(2px);
+}
+
+.drawer-handle::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    height: 6px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.6), transparent);
+    border-radius: 6px;
+}
+
+/* Panel de detalles */
+.details-panel {
+    background: rgba(255,255,255,0.95);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 
+        0 20px 40px rgba(0,0,0,0.1),
+        0 10px 20px rgba(0,0,0,0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.5);
+    position: sticky;
+    top: 20px;
+    animation: slideInRight 0.5s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.details-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.details-icon {
+    font-size: 4rem;
+    margin-bottom: 10px;
+    animation: iconBounce 2s ease-in-out infinite;
+}
+
+@keyframes iconBounce {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.1) rotate(2deg); }
+}
+
+.details-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #1F2937;
+    margin-bottom: 8px;
+}
+
+.details-type {
+    background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #F3F4F6, #E5E7EB);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stat-number {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #1F2937;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #6B7280;
+    margin-top: 5px;
+}
+
+.objects-section {
+    margin-top: 20px;
+}
+
+.section-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #1F2937;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.objects-list {
+    max-height: 300px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #D1D5DB #F9FAFB;
+}
+
+.object-item {
+    background: linear-gradient(135deg, #F9FAFB, #F3F4F6);
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.object-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, #FFFFFF, #F9FAFB);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.object-name {
+    font-weight: 500;
+    color: #1F2937;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.object-dot {
+    width: 8px;
+    height: 8px;
+    background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+    border-radius: 50%;
+}
+
+.object-size {
+    background: #E5E7EB;
+    color: #6B7280;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6B7280;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    opacity: 0.5;
+    margin-bottom: 15px;
+}
+
+.instructions {
+    text-align: center;
+    margin-top: 40px;
+    padding: 25px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.instructions p {
+    font-size: 1.2rem;
+    color: #6B7280;
+}
+
+.instructions .highlight {
+    font-weight: bold;
+    color: #1F2937;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .title h1 {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .closet-frame {
+        padding: 20px;
+    }
+    
+    .drawer-content {
+        padding: 0 15px;
+    }
+    
+    .capacity-bar {
+        margin: 0 10px;
+    }
+}
