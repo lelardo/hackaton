@@ -4,7 +4,6 @@ class Closet(models.Model):
     name = models.CharField(max_length=255)
 
 
-
 class Drawer(models.Model):
     SIZE_CHOICES = [
         ('S', 'Small'),
@@ -96,5 +95,3 @@ class History(models.Model):
         self.save()
 
     
-    
-
